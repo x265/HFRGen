@@ -15,10 +15,10 @@ namespace hfrgen
 		UTF8Encoding UTF8 = new UTF8Encoding(false); // drop BOM
 		StringComparison IC = StringComparison.OrdinalIgnoreCase; // ignore case!
 
-		public string _file; // API, set and return value
-		public string _fileavs; // API, set and return value
+		string _file; // not API
+		public string _fileavs; // API (allow host read this value)
 
-		public frmMain(string file, string lang) // API, value received from host
+		public frmMain(string file, string lang) // API, a value received from host
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.lightning_go;
