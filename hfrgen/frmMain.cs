@@ -12,12 +12,13 @@ namespace hfrgen
 {
 	public partial class frmMain : Form
 	{
-		public string _file;
-		public string _fileavs;
 		UTF8Encoding UTF8 = new UTF8Encoding(false); // drop BOM
-		StringComparison IC = StringComparison.OrdinalIgnoreCase;
+		StringComparison IC = StringComparison.OrdinalIgnoreCase; // ignore case!
 
-		public frmMain(string file, string lang)
+		public string _file; // API, set and return value
+		public string _fileavs; // API, set and return value
+
+		public frmMain(string file, string lang) // API, value received from host
 		{
 			InitializeComponent();
 			this.Icon = Properties.Resources.lightning_go;
