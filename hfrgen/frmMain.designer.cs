@@ -256,6 +256,7 @@
 			this.Name = "frmMain";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "High Frame Rate (InterFrame)";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
 			this.Load += new System.EventHandler(this.HighFrameRate_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

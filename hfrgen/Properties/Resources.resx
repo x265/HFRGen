@@ -125,15 +125,17 @@
     <value>..\Resources\lightning_go.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ScriptHFR" xml:space="preserve">
-    <value>Cores={0}
+    <value>{0}
+Cores={1}
 SetMemoryMax(512)
 SetMTMode(3, Cores)
-PluginPath = "{1}\"
-LoadPlugin(PluginPath+"svpflow1.dll")
-LoadPlugin(PluginPath+"svpflow2.dll")
-Import(PluginPath+"InterFrame2.avsi")
 DirectShowSource("{2}").ConvertToYV12()
 SetMTMode(2)
 InterFrame(Cores=Cores, Preset="{3}", Tuning="{4}", FrameDouble={5}, GPU={6}, InputType="{7}"{8})</value>
+  </data>
+  <data name="ScriptPlugin" xml:space="preserve">
+    <value>LoadPlugin("{0}")
+LoadPlugin("{1}")
+Import("{2}")</value>
   </data>
 </root>

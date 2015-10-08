@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -21,7 +16,7 @@ namespace hfrgen
 		public frmMain(string file, string lang) // API, a value received from host
 		{
 			InitializeComponent();
-			this.Icon = Properties.Resources.lightning_go;
+			Icon = Properties.Resources.lightning_go;
 
 			_file = file;
 			_fileavs = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file)) + ".avs";
@@ -29,16 +24,54 @@ namespace hfrgen
 
 		private void HighFrameRate_Load(object sender, EventArgs e)
 		{
-			if (String.Equals(Path.GetExtension(_file), ".avs", IC))
+			if (string.Equals(Path.GetExtension(_file), ".avs", IC))
 			{
 				MessageBox.Show("Please select non AviSynth script.");
-				this.Close();
+				Close();
 				return;
 			}
+
+			SettingCheck();
 
 			cboPreset.SelectedIndex = 0;
 			cboTuning.SelectedIndex = 0;
 			cboInputType.SelectedIndex = 0;
+		}
+
+		private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (!Properties.Settings.Default.UseFolderPlugin)
+			{
+				SettingCheck();
+			}
+		}
+
+		void SettingCheck()
+		{
+			if (string.IsNullOrEmpty(Properties.Settings.Default.FilePluginAvsi))
+				Setting("InterFrame2.avsi");
+			else if (!File.Exists(Properties.Settings.Default.FilePluginAvsi))
+				Setting("InterFrame2.avsi");
+
+			if (string.IsNullOrEmpty(Properties.Settings.Default.FilePluginDll1))
+				Setting("svpflow1.dll");
+			else if (!File.Exists(Properties.Settings.Default.FilePluginDll1))
+				Setting("svpflow1.dll");
+
+			if (string.IsNullOrEmpty(Properties.Settings.Default.FilePluginDll2))
+				Setting("svpflow2.dll");
+			else if (!File.Exists(Properties.Settings.Default.FilePluginDll2))
+				Setting("svpflow2.dll");
+		}
+
+		void Setting(string file)
+		{
+			if (Properties.Settings.Default.UseFolderPlugin)
+				return;
+
+			MessageBox.Show($"\"{file}\" not found or not configured.\nPlease configure before use.");
+			Form frm = new frmSetting();
+			frm.ShowDialog();
 		}
 
 		private void cboPreset_SelectedIndexChanged(object sender, EventArgs e)
@@ -117,29 +150,33 @@ namespace hfrgen
 
 		private void btnOK_Click(object sender, EventArgs e)
 		{
-			if (String.IsNullOrEmpty(Properties.Settings.Default.DirPluginHfr))
+			string[] Plugin =
 			{
-				MessageBox.Show("Missing InterFrame AviSynth Autoload Script and Plugins, please settings first before save.");
-				return;
-			}
+				Properties.Settings.Default.FilePluginDll1,
+				Properties.Settings.Default.FilePluginDll2,
+				Properties.Settings.Default.FilePluginAvsi
+			};
 
-			string[] Data = { String.Format("{0}", Environment.ProcessorCount),
-							Properties.Settings.Default.DirPluginHfr,
-							_file,
-							cboPreset.Text,
-							cboTuning.Text,
-							chkDoubleFps.Checked ? "true" : "false",
-							chkUseGPU.Checked ? "true" : "false",
-							cboInputType.Text,
-							chkFullFrame.Checked ? ", NewNum=60, NewDen=1" : ""};
+			string[] Data = 
+			{
+				Properties.Settings.Default.UseFolderPlugin ? "# using installed plugin" : string.Format(Properties.Resources.ScriptPlugin, Plugin),
+				string.Format("{0}", Environment.ProcessorCount),
+				_file,
+				cboPreset.Text,
+				cboTuning.Text,
+				chkDoubleFps.Checked ? "true" : "false",
+				chkUseGPU.Checked ? "true" : "false",
+				cboInputType.Text,
+				chkFullFrame.Checked ? ", NewNum=60, NewDen=1" : null
+			};
 
-			File.WriteAllText(_fileavs, String.Format(Properties.Resources.ScriptHFR, Data), UTF8);
-			this.Close();
+			File.WriteAllText(_fileavs, string.Format(Properties.Resources.ScriptHFR, Data), UTF8);
+			Close();
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 	}
 }
